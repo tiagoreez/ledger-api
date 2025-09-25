@@ -1,98 +1,242 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📒 Ledger API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a **basic ledger system** that keeps track of money moving between accounts.  
+It follows the idea of **double-entry accounting**, which means that every transaction has both a debit and a credit, and the total must always balance to zero.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Think of it as a very simple bookkeeping tool that you can interact with through an API.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Getting Started
 
-## Project setup
+1. Make sure you have **Node.js** installed.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the server:
+   ```bash
+   npm run start
+   ```
+4. The API will be available at:
+   ```
+   http://localhost:3000
+   ```
 
-```bash
-$ npm install
+---
+
+## 📌 Main Concepts
+
+- **Account** → Represents a place where money is stored (e.g., "Cash", "Bank", "Expenses").  
+  Each account has:
+  - A **direction**: `debit` or `credit`
+  - A **balance** (starts at 0 unless set when created)
+
+- **Transaction** → A movement of money that affects two or more accounts.  
+  Example: If you move $100 from your "Bank" account to "Cash", the bank is reduced, and cash is increased.
+
+- **Entry** → A single line inside a transaction. It says:
+  - Which account is affected
+  - Whether it’s a **debit** or **credit**
+  - How much money is moving
+
+---
+
+## 📡 Endpoints
+
+### 👉 Create an account
+**POST** `/accounts`
+
+Example:
+```json
+{
+  "name": "Cash",
+  "direction": "debit"
+}
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+Response:
+```json
+{
+  "id": "71cde2aa-b9bc-496a-a6f1-34964d05e6fd",
+  "name": "Cash",
+  "direction": "debit",
+  "balance": 0
+}
 ```
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ npm run test
+### 👉 Get account details
+**GET** `/accounts/:id`
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+Example response:
+```json
+{
+  "id": "71cde2aa-b9bc-496a-a6f1-34964d05e6fd",
+  "name": "Cash",
+  "direction": "debit",
+  "balance": 100
+}
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 👉 Get all accounts
+**GET** `/accounts`
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+This returns the list of **all accounts** currently stored in the system.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+Example response:
+```json
+[
+  {
+    "id": "71cde2aa-b9bc-496a-a6f1-34964d05e6fd",
+    "name": "Cash",
+    "direction": "debit",
+    "balance": 100
+  },
+  {
+    "id": "22e6bbd0-5d7f-48af-8e47-8ecda1a7eefe",
+    "name": "Bank",
+    "direction": "credit",
+    "balance": 900
+  }
+]
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+### 👉 Create a transaction
+**POST** `/transactions`
 
-Check out a few resources that may come in handy when working with NestJS:
+Example:
+```json
+{
+  "name": "Withdraw money",
+  "entries": [
+    {
+      "direction": "credit",
+      "account_id": "22e6bbd0-5d7f-48af-8e47-8ecda1a7eefe",
+      "amount": 100
+    },
+    {
+      "direction": "debit",
+      "account_id": "71cde2aa-b9bc-496a-a6f1-34964d05e6fd",
+      "amount": 100
+    }
+  ]
+}
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Response:
+```json
+{
+  "id": "3256dc3c-7b18-4a21-95c6-146747cf2971",
+  "name": "Withdraw money",
+  "entries": [
+    {
+      "id": "entry1",
+      "direction": "credit",
+      "account_id": "22e6bbd0-5d7f-48af-8e47-8ecda1a7eefe",
+      "amount": 100
+    },
+    {
+      "id": "entry2",
+      "direction": "debit",
+      "account_id": "71cde2aa-b9bc-496a-a6f1-34964d05e6fd",
+      "amount": 100
+    }
+  ]
+}
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 👉 Get all transactions
+**GET** `/transactions`
 
-## Stay in touch
+This returns the list of **all transactions** applied to the ledger.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Example response:
+```json
+[
+  {
+    "id": "3256dc3c-7b18-4a21-95c6-146747cf2971",
+    "name": "Withdraw money",
+    "entries": [
+      {
+        "id": "entry1",
+        "direction": "credit",
+        "account_id": "22e6bbd0-5d7f-48af-8e47-8ecda1a7eefe",
+        "amount": 100
+      },
+      {
+        "id": "entry2",
+        "direction": "debit",
+        "account_id": "71cde2aa-b9bc-496a-a6f1-34964d05e6fd",
+        "amount": 100
+      }
+    ]
+  }
+]
+```
 
-## License
+---
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### 👉 Get transactions details
+**GET** `/transactions/:id`
+
+Example response:
+```json
+[
+  {
+    "id": "3256dc3c-7b18-4a21-95c6-146747cf2971",
+    "name": "Withdraw money",
+    "entries": [
+      {
+        "id": "entry1",
+        "direction": "credit",
+        "account_id": "22e6bbd0-5d7f-48af-8e47-8ecda1a7eefe",
+        "amount": 100
+      },
+      {
+        "id": "entry2",
+        "direction": "debit",
+        "account_id": "71cde2aa-b9bc-496a-a6f1-34964d05e6fd",
+        "amount": 100
+      }
+    ]
+  }
+]
+```
+
+---
+
+## 📖 Example Flow
+
+1. Create two accounts:
+   - "Bank" (credit)
+   - "Cash" (debit)
+
+2. Move $100 from "Bank" to "Cash":
+   - The bank account balance goes **down by 100**
+   - The cash account balance goes **up by 100**
+
+3. Check all accounts:
+   ```bash
+   GET /accounts
+   ```
+
+4. Check all transactions:
+   ```bash
+   GET /transactions
+   ```
+
+---
+
+## ✅ Notes
+
+- Every transaction must balance: total debits = total credits.  
+- You cannot directly change account balances; only transactions can do that.  
+- The storage is **in memory** → if you restart the server, data will reset.  
